@@ -17,7 +17,24 @@ namespace MvcNetCorePichonCSRF.Controllers
         [HttpPost]
         public IActionResult Productos(string direccion, string[] producto)
         {
+            if(HttpContext.Session.GetString("USUARIO") == null)
+            {
+                return RedirectToAction("Denied", "Managed");
+            }
+            else
+            {
+                // Lo llevamos a pedido final, enviamos la direccion y los productos
+                ViewData["PRODUCTOS"] = producto;
+                ViewData["DIRECCION"] = direccion;
+                return RedirectToAction("PedidoFinal");
+            }
+        }
 
+        public IActionResult PedidoFinal()
+        {
+            // Recuperamos los productos
+            string[] productos = ViewData["PRODUCTOS"] as string[];
+            return View(productos);
         }
     }
 }
